@@ -43,3 +43,18 @@ print("a = {}, b = {}".format(a,b))
 # Для вычисления квадратного корня воспользуйтесь функцией sqrt() модуля math:
 # import math
 # math.sqrt(4) - вычисляет корень числа 4
+
+a,b,c = input("Введите коэфиценты: ").split()
+import math
+a = int(a)
+b = int(b)
+c = int(c)
+d = b**2 -4*a*c
+if d>0:
+    x1 = (-b + math.sqrt(d)) / (a*2)
+    x2 = (-b - math.sqrt(d)) / (a*2)
+elif d==0:
+    x1 = -b/2*a2
+else:
+    print("Уравнение не имеет решений")
+print("X1 = {}, X2 = {}, d = {}".format(x1,x2))
