@@ -7,6 +7,15 @@ equation = 'y = -12x + 11111140.2121'
 x = 2.5
 # вычислите и выведите y
 
+equation = 'y = -12x + 11111140.2121'
+x = 2.5
+k = str()
+equation = equation.split()
+k = float(equation[2][:-1])
+b = float(equation[4])
+print('y = {}'.format(x * k + b))
+
+
 
 # Задание-2: Дата задана в виде строки формата 'dd.mm.yyyy'.
 # Проверить, корректно ли введена дата.
@@ -25,6 +34,41 @@ date = '01.11.1985'
 date = '01.22.1001'
 date = '1.12.1001'
 date = '-2.10.3001'
+
+
+
+
+date = input("Введите дату в формате dd.mm.yyyy ")
+day, month, year = date.split(".")
+#Определяю в словаре по каждому месяцу количество дней и "правильные" года (длинновато получилось, конечно )) ):
+dict_1 = { 'year': [i for i in range(1,10000)], '01': [ i for i in range(1,32) ], '02': [ i for i in range(1,30)], '03': [ i for i in range(1,32)], '04': [ i for i in range(1,31)], '05': [ i for i in range(1,32) ], '06': [ i for i in range(1,31)], '07': [ i for i in range(1,32) ], '08': [ i for i in range(1,32)], '09': [ i for i in range(1,31) ], '10': [ i for i in range(1,32) ], '11': [ i for i in range(1,31) ], '12': [ i for i in range(1,32) ]}
+
+try:
+   if int(day) not in dict_1[month] or len(str(day)) != 2 or len(str(month)) != 2 or len(str(year)) != 4 or int(year) not in dict_1['year']:
+       print('Неверный формат')
+       exit()
+   else:
+       print('date =  {}'.format(date))
+except KeyError:
+    print('неверный формат')
+except ValueError:
+    print('неверный формат')
+
+	
+	
+	
+	
+####################################### Дата вариант 2:
+import datetime
+date = input('Введите дату в формате dd.mm.yyyy: ')
+def validate(date_in):
+    try:
+        datetime.datetime.strptime(date_in, '%d.%m.%Y')
+        print(date_in)
+    except ValueError:
+        print("Неверный формат, нужно dd.mm.yyyy")
+validate(date)
+
 
 
 # Задание-3: "Перевёрнутая башня" (Задача олимпиадного уровня)
@@ -64,8 +108,8 @@ answer = int(input('Введите номер квартиры '))
 while nk < answer:
     nb = nb + 1
     nk = nk + nb**2
-et = (1+nb)*nb/2
-# Вычисляем этаж и номер последней квартиры на этаже
+et = (1+nb)*nb/2#Формула для вычесления суммы элеменов последовательности, так как количество этажей до последнего блока, это сумма этажей во всех предыдущих, то есть: n + (n+1) + (n+2)
+# Вычисляем этаж и номер последней квартиры на этаже:
 while answer <= nk - nb:
     nk = nk - nb
     et -= 1
