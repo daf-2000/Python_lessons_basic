@@ -4,7 +4,27 @@
 
 def fibonacci(n, m):
     pass
+	
+	
 
+a = int(input('a= '))
+b = int(input('b= '))
+def fibonacci(a,b):
+    dict_1 = {}
+    k2 = 1
+    k1 = 1
+    for i in range(1,b + 1):
+        dict_1[i] = [k1, k2]
+        k1 = k2 + k1
+        k2 = k1 + k2
+        if i == b - 1:
+            k3 = k2
+    for key in dict_1.keys():
+        if int(key) >= int(a):
+            print(dict_1[key])
+fibonacci(a,b)
+	
+	
 # Задача-2:
 # Напишите функцию, сортирующую принимаемый список по возрастанию.
 # Для сортировки используйте любой алгоритм (например пузырьковый).
