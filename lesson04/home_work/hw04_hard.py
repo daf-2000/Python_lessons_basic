@@ -11,6 +11,11 @@ matrix = [[1, 0, 8],
 #                  [0, 4, 4],
 #                  [8, 1, 2]]
 
+matrix = [[1, 0, 8],
+          [3, 4, 1],
+          [0, 4, 2]]
+print(list(map(list, zip(*matrix))))
+
 # Суть сложности hard: Решите задачу в одну строку
 
 # Задание-2:
@@ -39,6 +44,27 @@ number = """
 05886116467109405077541002256983155200055935729725
 71636269561882670428252483600823257530420752963450"""
 
+def per(number):
+    number = number.replace('\n', '')
+    dict_1 = dict()
+    dict_2 = dict()
+    k = 0
+    m = 0
+    dict_2 = {}
+    mul = 1
+    for i in range(len(number) -5):
+        if not '0' in number[i:i+5]:
+            dict_1[i] = number[i:i+5]
+    k = 0
+    for key, value in dict_1.items():
+        dict_2[key] = reduce(lambda x, y: x * y, (list(map(int, dict_1[key]))))
+    for key, value in dict_2.items():
+        if value > k:
+            k = value
+            index = key
+    return(index , k)
+print(per(number))
+
 
 # Задание-3 (Ферзи):
 # Известно, что на доске 8×8 можно расставить 8 ферзей так, чтобы они не били
@@ -47,3 +73,62 @@ number = """
 # Программа получает на вход восемь пар чисел,
 # каждое число от 1 до 8 — координаты 8 ферзей.
 # Если ферзи не бьют друг друга, выведите слово NO, иначе выведите YES.
+def coordinates(x,y):#задаем функцию, которая принимает 2 координаты "x" и "y" и на выходе получается словарь с клчами "y" и всеми возможными для них "x" (ходы только по диагонали)
+    dict_1 = {}
+    b1 = x + y#расчитываем коэфиценты b для функции вида y=kx + b(y = x - b для возрачтающего графика, y = b - x для убывающего)
+    b2 = x - y
+    list_1 = list()
+    for i in range(1,9):
+        if i == y:#Пропускаем значение когда "y" это та координата, которую мы задали
+           continue
+        if 0 < i + b2 < 9:
+            list_1.append(i + b2)
+        if 0 < b1 - i < 9:
+            list_1.append(b1 - i)
+        if len(list_1) == 0:
+            continue
+        list_1 = set(list_1)
+        dict_1[i] = sorted(list(list_1))
+        list_1 = list()
+    return(dict_1)
+f1 = list(map(int, input('Введите координаты первого ферзя через пробел x,y: ').split()))
+f2 = list(map(int, input('Введите координаты второго ферзя через пробел x,y: ').split()))
+f3 = list(map(int, input('Введите координаты третьего ферзя через пробел x,y: ').split()))
+f4 = list(map(int, input('Введите координаты четвертого ферзя через пробел x,y: ').split()))
+f5 = list(map(int, input('Введите координаты пятого ферзя через пробел x,y: ').split()))
+f6 = list(map(int, input('Введите координаты шестого ферзя через пробел x,y: ').split()))
+f7 = list(map(int, input('Введите координаты седьмого ферзя через пробел x,y: ').split()))
+f8 = list(map(int, input('Введите координаты восьмого ферзя через пробел x,y: ').split()))
+#Получаем словарь возможных ходов ферзя для всех введенных начальных координат:
+fn1 = coordinates(*f1)
+fn2 = coordinates(*f2)
+fn3 = coordinates(*f3)
+fn4 = coordinates(*f4)
+fn5 = coordinates(*f5)
+fn6 = coordinates(*f6)
+fn7 = coordinates(*f7)
+fn8 = coordinates(*f8)
+#Создаем 2 сета, в одном все введенные "x" в другом все введенные "y".
+# Если set получится неравным 8, значит удалились одинаковые элементы и условие не выполняется (ферзи бьют друг друга)
+#Таким образом мы проверяем не бьют ли ферзи друг друга по вертикали или горизонтали
+set1 = { f1[0], f2[0], f3[0], f4[0], f5[0], f6[0], f7[0], f8[0] }
+set2 = { f1[1], f2[1], f3[1], f4[1], f5[1], f6[1], f7[1], f8[1] }
+if len(set1) != 8 or len(set2) != 8:
+    print('YES')
+    exit()
+list_res = [ fn1, fn2, fn3, fn4, fn5, fn6, fn7, fn8 ]
+dict1 = dict()
+#Создаем словарь со всеми возможными ходами для введеных координат и проверяем, не накладываются ли они с введеными первичными координатами ферзей:
+for i in list_res:
+    for key, value in i.items():
+        try:
+           dict1[key] = dict1[key] + value
+        except KeyError:
+            dict1[key] = value
+def tr(lst):
+    if lst[0] in dict1[lst[1]]:
+        print('YES')
+        exit()
+l = [f1, f2, f3, f4, f5, f6, f7, f8]
+list(map(tr, l))
+print('NO')
