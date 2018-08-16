@@ -57,3 +57,95 @@
 модуль random: http://docs.python.org/3/library/random.html
 
 """
+
+from tabulate import tabulate
+import random
+import sys
+counter_pl = 0
+counter_pc = 0
+a = True
+def karta():#Функция генерирующая карту для игрока и компьютера
+    list_card = list()
+    while len(list_card) < 15:
+        k = random.randint(1,90)
+        if k in list_card:
+            continue
+        else:
+            list_card.append(k)
+    list_card = [list_card[i:i + 5] for i in range(0, len(list_card), 5)]#разделяем числа на 3 листа в одном
+    for i in range(len(list_card)):
+        list_card[i] = sorted(list_card[i])
+        for _ in range(4):
+            list_card[i].insert(random.randint(1,9), '  ' )#Добавляем пробелы в карточку
+    return list_card
+def begin():#Функция обнуления карточек и счетчиков в случае повторного начала игры
+    global m
+    global player_c
+    global pc_c
+    global step_list
+    global counter_pc
+    global counter_pl
+    m = True
+    player_c = karta()
+    pc_c = karta()
+    step_list = [i for i in range(1, 91)]
+    counter_pl = 0
+    counter_pc = 0
+begin()
+def turn_new(step_list):#Функция определяющая следующее случайное число при выборе боченка
+    r = random.choice(step_list)
+    step_list.remove(r)
+    return r
+def turn_player(player_c, turn_num):#Функция ход игрока
+    global counter_pl
+    global m#Переменная используется для определения - правильный ли выбор сделал игрок
+    l = False
+    sel = input('Выпало число {}. Y - удалить число {} из карточки/любая клавиша + ввод - продолжить. Ваш выбор: '.format(turn_num,turn_num))
+    for i in range(len(player_c)):
+        if turn_num in player_c[i] and sel not in ['Y', 'y']:
+            m = False
+        if turn_num in player_c[i]:
+            player_c[i][int(player_c[i].index(turn_num))] = '  '
+            counter_pl += 1
+            l = True
+    if l == False and sel in ['Y', 'y']:
+        m = False
+    else:
+        l = False
+    return
+def turn_pc(pc_c,turn_num):#функция ход компьютера
+    global counter_pc
+    for i in range(len(pc_c)):
+        if turn_num in pc_c[i]:
+            pc_c[i][int(pc_c[i].index(turn_num))] = '  '
+            counter_pc += 1
+    return
+def results(player_c, pc_c, turn_num):#функция показывающая боченок и карточки каждый ход
+    print('Выпало число {}\n\n'.format(turn_num))
+    print('Ваша карточка\n {}'.format(tabulate(player_c)))
+    print('Карточка компьютера\n {}'.format(tabulate(pc_c)))
+def question():
+    i = input('Сыграем еще раз Y/N?')
+    if i in ['y', 'Y']:
+        begin()
+    else:
+        print('Пока!')
+        sys.exit(0)
+while a == True:
+    if m == False:
+        print('Вы проиграли')
+        question()
+    if counter_pl == 15 and counter_pc != 15:
+        print('Вы выйграли, УРААА!!!')
+        question()
+    if counter_pl != 15 and counter_pc == 15:
+        print('Вы проиграли')
+        question()
+    if counter_pl == 15 and counter_pc == 15:
+        print('Ничья!!!')
+        question()
+    turn_num = turn_new(step_list)
+    results(player_c, pc_c, turn_num)
+    turn_player(player_c, turn_num)
+    turn_pc(pc_c, turn_num)
+
