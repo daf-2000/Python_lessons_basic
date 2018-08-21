@@ -123,3 +123,45 @@ OpenWeatherMap — онлайн-сервис, который предостав�
 
 """
 
+
+# -*- coding: utf-8 -*-
+import datetime
+import urllib.request,gzip, json
+import sqlite3
+import os
+if not os.path.isfile('file.gzip'):
+    url = 'http://bulk.openweathermap.org/sample/city.list.json.gz'
+    urllib.request.urlretrieve(url,os.getcwd() + '\\file.gzip')
+else:
+    pass
+fp = gzip.open('file.gzip')
+contents = fp.read()
+fp.close()
+u_str = contents.decode('utf-8') # u_str is now a unicode string
+a = open('test_file.txt', 'w', encoding='utf-8')
+a.write(u_str)
+a.close()
+city = input('Введите город: ')
+country = input('Введите код страны: ')
+jdata = json.loads(u_str)
+for i in jdata:
+    if i['name'] == city and i['country'] == country:
+        result = i
+res = urllib.request.urlopen('http://api.openweathermap.org/data/2.5/forecast?id={}&units=metric&APPID=18cd5f28a6c7a21cef5a7449a3d3960d'.format(result['id']))
+res_body = res.read()
+res_body= res_body.decode('ascii')
+jweather = json.loads(res_body)
+connection = sqlite3.connect('test.db')
+cursor = connection.cursor()
+try:
+   cursor.execute("create table weather (id_города integer not NULL primary key, город VARCHAR(255), Дата DATE, Температура INTEGER, id_погоды INTEGER)")
+except sqlite3.OperationalError:
+    pass
+for key in jweather['list']:
+   data = '\'{}\',\'{}\',\'{}\',\'{}\',\'{}\''.format(result['id'], city, key['dt_txt'], key['main']['temp'], key['weather'][0]['id'])
+   if str(datetime.datetime.now())[:10] in data:
+      query = ('INSERT OR REPLACE into weather values ({})'.format(data))
+      cursor.execute(query)
+connection.commit()
+cursor.execute('select * from weather where город=\'{}\';'.format(city))
+print(cursor.fetchone())
